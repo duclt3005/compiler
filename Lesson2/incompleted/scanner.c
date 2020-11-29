@@ -71,23 +71,45 @@ Token* readIdentKeyword(void) {
 
   return token;
 }
+
 // ============= check number token =======================
 Token* readNumber(void) {
   int count = 0;
   Token* token = makeToken(TK_NUMBER, lineNo, colNo);		// token Number
-
-  while (charCodes[currentChar] == CHAR_DIGIT) {			// ki tu hien tai la digit
-//	if (count > 9) {
-//		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
-//	}
-    token->string[count] = currentChar;						// them vao token
+	token->string[count] = currentChar;						// them vao token
     count++;												// ki tu tiep theo trong token
     readChar();
-  }
-
-  token->string[count] = '\0';								// ket thuc token
-  token->value = atoi(token->string);						// chuyen ve Integer
-
+    if(charCodes[currentChar]== CHAR_PERIOD){
+    	
+    	token->string[count] = currentChar;						// them vao token
+    	count++;
+		readChar();
+//		if(charCodes[currentChar] == CHAR_PERIOD){
+//			error(ERR_INVALIDFLOAT, token->lineNo, token->colNo);
+//		}
+		while (charCodes[currentChar] == CHAR_DIGIT) {
+			token->string[count] = currentChar;						// them vao token
+			count++;												// ki tu tiep theo trong token
+			readChar();
+			
+		}	
+		token->tokenType= TK_FLOAT;
+		token->string[count] = '\0';								// ket thuc token
+  		token->value = atof(token->string);
+	}
+    else{
+	  while (charCodes[currentChar] == CHAR_DIGIT) {			// ki tu hien tai la digit
+	//	if (count > 9) {
+	//		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
+	//	}
+	    token->string[count] = currentChar;						// them vao token
+	    count++;												// ki tu tiep theo trong token
+	    readChar();
+	  }
+	
+	  token->string[count] = '\0';								// ket thuc token
+	  token->value = atoi(token->string);						// chuyen ve Integer
+	}
   return token;
 }
 
@@ -267,6 +289,10 @@ Token* getToken(void) {
     	token = makeToken(SB_RPAR, lineNo, colNo);
     	readChar();
     	return token;
+    case CHAR_PERCENT:											// %
+    	token = makeToken(SB_PERCENT, lineNo, colNo);
+    	readChar();
+    	return token;	
   	default:
 	    token = makeToken(TK_NONE, lineNo, colNo);
 	    error(ERR_INVALIDSYMBOL, lineNo, colNo);
@@ -287,6 +313,7 @@ void printToken(Token *token) {
   case TK_IDENT: printf("TK_IDENT(%s)\n", token->string); break;
   case TK_NUMBER: printf("TK_NUMBER(%s)\n", token->string); break;
   case TK_CHAR: printf("TK_CHAR(\'%s\')\n", token->string); break;
+  case TK_FLOAT: printf("TK_FLOAT(%s)\n", token->string); break;
   case TK_EOF: printf("TK_EOF\n"); break;
 
   case KW_PROGRAM: printf("KW_PROGRAM\n"); break;
@@ -294,6 +321,7 @@ void printToken(Token *token) {
   case KW_TYPE: printf("KW_TYPE\n"); break;
   case KW_VAR: printf("KW_VAR\n"); break;
   case KW_INTEGER: printf("KW_INTEGER\n"); break;
+  case KW_FLOAT: printf("KW_FLOAT\n"); break;
   case KW_CHAR: printf("KW_CHAR\n"); break;
   case KW_ARRAY: printf("KW_ARRAY\n"); break;
   case KW_OF: printf("KW_OF\n"); break;
@@ -329,6 +357,7 @@ void printToken(Token *token) {
   case SB_RPAR: printf("SB_RPAR\n"); break;
   case SB_LSEL: printf("SB_LSEL\n"); break;
   case SB_RSEL: printf("SB_RSEL\n"); break;
+  case SB_PERCENT: printf("SB_PERCENT\n"); break;
   }
 }
 

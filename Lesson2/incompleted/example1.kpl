@@ -1,4 +1,8 @@
 Program Example1; (* Example 1 *)
 Begin
-
-End. (* Example 1 )
+VAR  P:INTEGER;
+     C:CHAR;
+     F:FLOAT;
+     P:=1;  
+	F:=1.343;  
+End. (* Example 1 *)

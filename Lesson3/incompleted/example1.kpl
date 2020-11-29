@@ -1,0 +1,12 @@
+Program Example1; (* Example 1 *)
+CONST MAX = 3.145;
+TYPE T= FLOAT;
+VAR A : FLOAT;
+PROCEDURE THUTUC( F:FLOAT ; U:FLOAT );
+begin
+ 	F:=1.26;
+end;
+Begin
+	A := A % 2.45;
+	CALL THUTUC 2.4);
+End. (* Example 1 *)

@@ -18,6 +18,7 @@ keywords[KEYWORDS_COUNT] = {
   {"TYPE", KW_TYPE},
   {"VAR", KW_VAR},
   {"INTEGER", KW_INTEGER},
+  {"FLOAT", KW_FLOAT},
   {"CHAR", KW_CHAR},
   {"ARRAY", KW_ARRAY},
   {"OF", KW_OF},
@@ -32,7 +33,7 @@ keywords[KEYWORDS_COUNT] = {
   {"WHILE", KW_WHILE},
   {"DO", KW_DO},
   {"FOR", KW_FOR},
-  {"TO", KW_TO}
+  {"TO", KW_TO},
 };
 
 // so sanh 2 tu, tra ve T/F
