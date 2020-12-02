@@ -425,7 +425,22 @@ void compileAssignSt(void) {
   if (lookAhead->tokenType == SB_LSEL) {
       compileIndexes();
   }
-  eat(SB_ASSIGN);
+  //eat(SB_ASSIGN);
+  switch (lookAhead->tokenType)
+  {
+  case SB_ASSIGN_PLUS:
+    eat(SB_ASSIGN_PLUS);
+    break;
+  case SB_ASSIGN_MINUS:
+    eat(SB_ASSIGN_MINUS);
+    break;
+  case SB_ASSIGN:
+    eat(SB_ASSIGN);
+    break;
+  default :
+    printf("%d-%d:Missing assign\n", lookAhead->lineNo, lookAhead->colNo);
+     exit(0);
+  }
   compileExpression();
   
   assert("Assign statement parsed ....");
