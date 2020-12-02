@@ -434,6 +434,12 @@ void compileAssignSt(void) {
   case SB_ASSIGN_MINUS:
     eat(SB_ASSIGN_MINUS);
     break;
+   case SB_SHIFT_LEFT:
+    eat(SB_SHIFT_LEFT);
+    break;
+ case SB_SHIFT_RIGHT:
+    eat(SB_SHIFT_RIGHT);
+    break;
   case SB_ASSIGN:
     eat(SB_ASSIGN);
     break;

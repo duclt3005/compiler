@@ -261,6 +261,10 @@ Token *getToken(void)
       readChar();
       return makeToken(SB_LE, ln, cn);
     }
+    else if((currentChar != EOF) && (charCodes[currentChar] == CHAR_LT)){
+      readChar();
+      return makeToken(SB_SHIFT_LEFT, ln, cn);
+    }
     else
       return makeToken(SB_LT, ln, cn);
   case CHAR_GT:
@@ -271,6 +275,10 @@ Token *getToken(void)
     {
       readChar();
       return makeToken(SB_GE, ln, cn);
+    }
+    else if((currentChar != EOF) && (charCodes[currentChar] == CHAR_GT)){
+      readChar();
+      return makeToken(SB_SHIFT_RIGHT, ln, cn);
     }
     else
       return makeToken(SB_GT, ln, cn);
@@ -534,5 +542,13 @@ void printToken(Token *token)
   case SB_MOD:
     printf("SB_MOD\n");
     break;
+  case SB_SHIFT_RIGHT:
+    printf("SB_SHIFT_RIGHT\n");
+    break;
+  case SB_SHIFT_LEFT:
+    printf("SB_SHIFT_LEFT\n");
+    break;
+    
   }
+  
 }
