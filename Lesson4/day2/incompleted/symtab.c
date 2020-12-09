@@ -18,12 +18,19 @@ void freeReferenceList(ObjectNode *objList);
 SymTab* symtab;
 Type* intType;
 Type* charType;
+Type* floatType;
 
 /******************* Type utilities ******************************/
 
 Type* makeIntType(void) {
   Type* type = (Type*) malloc(sizeof(Type));
   type->typeClass = TP_INT;
+  return type;
+}
+
+Type* makeFloatType(void) {
+  Type* type = (Type*) malloc(sizeof(Type));
+  type->typeClass = TP_FLOAT;
   return type;
 }
 
@@ -64,6 +71,7 @@ int compareType(Type* type1, Type* type2) {
 void freeType(Type* type) {
   switch (type->typeClass) {
   case TP_INT:
+  case TP_FLOAT:
   case TP_CHAR:
     free(type);
     break;
@@ -83,6 +91,15 @@ ConstantValue* makeIntConstant(int i) {
   return value;
 }
 
+
+ConstantValue* makeFloatConstant(float f) {
+  ConstantValue* value = (ConstantValue*) malloc(sizeof(ConstantValue));
+  value->type = TP_FLOAT; 
+  value->floatValue = f;
+  return value;
+}
+
+
 ConstantValue* makeCharConstant(char ch) {
   ConstantValue* value = (ConstantValue*) malloc(sizeof(ConstantValue));
   value->type = TP_CHAR;
@@ -95,6 +112,8 @@ ConstantValue* duplicateConstantValue(ConstantValue* v) {
   value->type = v->type;
   if (v->type == TP_INT) 
     value->intValue = v->intValue;
+  else if(v->type == TP_FLOAT)
+    value->floatValue = v->floatValue;
   else
     value->charValue = v->charValue;
   return value;
@@ -315,6 +334,17 @@ void exitBlock(void) {
 
 Object* lookupObject(char *name) {
   // TODO
+   Scope* currentScope = symtab->currentScope;
+    Object* object = NULL;
+    while (currentScope != NULL) {
+        object = findObject(currentScope->objList, name);
+        if (object != NULL)
+            return object;
+        // Jump to the outside scope
+        currentScope = currentScope->outer;
+    }
+
+    return NULL;
 }
 
 void declareObject(Object* obj) {

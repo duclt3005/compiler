@@ -11,6 +11,7 @@
 
 enum TypeClass {
   TP_INT,
+  TP_FLOAT,
   TP_CHAR,
   TP_ARRAY
 };
@@ -43,6 +44,7 @@ typedef struct Type_ BasicType;
 struct ConstantValue_ {
   enum TypeClass type;
   union {
+    float floatValue;
     int intValue;
     char charValue;
   };
@@ -144,6 +146,7 @@ void freeType(Type* type);
 
 ConstantValue* makeIntConstant(int i);
 ConstantValue* makeCharConstant(char ch);
+ConstantValue* makeFloatConstant(float f);
 ConstantValue* duplicateConstantValue(ConstantValue* v);
 
 Scope* createScope(Object* owner, Scope* outer);
