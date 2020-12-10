@@ -28,8 +28,9 @@ void eat(TokenType tokenType)
   {
     scan();
   }
-  else
+  else{
     missingToken(tokenType, lookAhead->lineNo, lookAhead->colNo);
+  }
 }
 
 void compileProgram(void)
@@ -250,7 +251,12 @@ ConstantValue *compileConstant(void)
   case SB_MINUS:
     eat(SB_MINUS);
     constValue = compileConstant2();
+    if(constValue->type == TP_INT){
     constValue->intValue = -constValue->intValue;
+    }
+    if(constValue->type == TP_FLOAT){
+    constValue->floatValue = -constValue->floatValue;
+    }
     break;
   case TK_CHAR:
     eat(TK_CHAR);
@@ -273,6 +279,10 @@ ConstantValue *compileConstant2(void)
   case TK_NUMBER:
     eat(TK_NUMBER);
     constValue = makeIntConstant(currentToken->value);
+    break;
+  case TK_FLOAT:
+    eat(TK_FLOAT);
+    constValue = makeFloatConstant(currentToken->value2);
     break;
   case TK_IDENT:
     eat(TK_IDENT);
@@ -298,7 +308,6 @@ Type *compileType(void)
 {
   // create and return a type
   Type *type = NULL;
-
   switch (lookAhead->tokenType)
   {
   case KW_INTEGER:

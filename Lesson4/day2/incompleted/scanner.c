@@ -91,9 +91,17 @@ Token *readNumber(void)
   token->string[count] = currentChar;                 // them vao token
   count++;                                            // ki tu tiep theo trong token
   readChar();
+  while (charCodes[currentChar] == CHAR_DIGIT)
+    {                                     // ki tu hien tai la digit
+                                          //	if (count > 9) {
+                                          //		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
+                                          //	}
+      token->string[count] = currentChar; // them vao token
+      count++;                            // ki tu tiep theo trong token
+      readChar();
+    }
  if (charCodes[currentChar] == CHAR_PERIOD)
   {
-
     token->string[count] = currentChar; // them vao token
     count++;
     readChar();
@@ -112,17 +120,6 @@ Token *readNumber(void)
   }
   else
   {
-    while (charCodes[currentChar] == CHAR_DIGIT)
-    {                                     // ki tu hien tai la digit
-                                          //	if (count > 9) {
-                                          //		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
-                                          //	}
-      token->string[count] = currentChar; // them vao token
-      count++;                            // ki tu tiep theo trong token
-      readChar();
-    }
-    //printf("%s", token->string);
-    token->string[count] = '\0';        // ket thuc token
     token->value = atoi(token->string); // chuyen ve Integer
   }
   return token;

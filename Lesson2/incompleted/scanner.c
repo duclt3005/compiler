@@ -117,15 +117,13 @@ Token* readNumber(void) {
 Token* readConstChar(void) {
   Token* token = makeToken(TK_CHAR, lineNo, colNo);
   readChar();
-
   if (currentChar == -1) {
     error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);	// loi sai CONST
   } 
   else {
 	switch(charCodes[currentChar]) {
-	case CHAR_SINGLEQUOTE:				// ’
+	case CHAR_SINGLEQUOTE:				// ï¿½
 		readChar();
-
 		if (charCodes[currentChar] == CHAR_SINGLEQUOTE) {
 		    token->string[0] = currentChar;
 

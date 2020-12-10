@@ -110,12 +110,15 @@ ConstantValue* makeCharConstant(char ch) {
 ConstantValue* duplicateConstantValue(ConstantValue* v) {
   ConstantValue* value = (ConstantValue*) malloc(sizeof(ConstantValue));
   value->type = v->type;
-  if (v->type == TP_INT) 
+  if (v->type == TP_INT) {
     value->intValue = v->intValue;
-  else if(v->type == TP_FLOAT)
+  }
+  else if(v->type == TP_FLOAT){
     value->floatValue = v->floatValue;
-  else
+  }
+  else{
     value->charValue = v->charValue;
+  }
   return value;
 }
 

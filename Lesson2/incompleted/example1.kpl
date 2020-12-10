@@ -4,5 +4,5 @@ VAR  P:INTEGER;
      C:CHAR;
      F:FLOAT;
      P:=1;  
-	F:=1.343;  
+	F:=11.;  
 End. (* Example 1 *)

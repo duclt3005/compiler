@@ -1,5 +1,5 @@
 Program Example1; (* Example 1 *)
-CONST MAX = 9.14 ; //dkad
+CONST MAX = 10.6 ; 
 	 MIN = 'a';
 TYPE T= ARRAY(. 9 .) of Integer;
 VAR A : ARRAY(. 9 .) of Integer;

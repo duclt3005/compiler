@@ -52,8 +52,10 @@ void skipComment()
     error(ERR_ENDOFCOMMENT, lineNo, colNo);
 }
 
-void skipComment2(){
-  while(currentChar!=10){
+void skipComment2()
+{
+  while (currentChar != 10)
+  {
     readChar();
   }
 }
@@ -213,7 +215,7 @@ Token *getToken(void)
     else
       return makeToken(SB_PLUS, lineNo, colNo);
 
-   //token = makeToken(SB_PLUS, lineNo, colNo);
+    //token = makeToken(SB_PLUS, lineNo, colNo);
     //readChar();
     //return token;
   case CHAR_MINUS:
@@ -247,7 +249,7 @@ Token *getToken(void)
       //return makeToken(SB_ASSIGN_MINUS, ln, cn);
     }
     else
-       makeToken(SB_SLASH, lineNo, colNo);
+      makeToken(SB_SLASH, lineNo, colNo);
 
     //token = makeToken(SB_SLASH, lineNo, colNo);
     //readChar();
@@ -261,7 +263,8 @@ Token *getToken(void)
       readChar();
       return makeToken(SB_LE, ln, cn);
     }
-    else if((currentChar != EOF) && (charCodes[currentChar] == CHAR_LT)){
+    else if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_LT))
+    {
       readChar();
       return makeToken(SB_SHIFT_LEFT, ln, cn);
     }
@@ -276,7 +279,8 @@ Token *getToken(void)
       readChar();
       return makeToken(SB_GE, ln, cn);
     }
-    else if((currentChar != EOF) && (charCodes[currentChar] == CHAR_GT)){
+    else if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_GT))
+    {
       readChar();
       return makeToken(SB_SHIFT_RIGHT, ln, cn);
     }
@@ -548,7 +552,5 @@ void printToken(Token *token)
   case SB_SHIFT_LEFT:
     printf("SB_SHIFT_LEFT\n");
     break;
-    
   }
-  
 }

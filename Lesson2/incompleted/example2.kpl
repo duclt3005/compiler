@@ -1,6 +1,8 @@
 Program Example2; (* Factorial *)
-   
+Const max= 's';  
+Type min= ABC; 
 Var n: Integer;
+    m : Double;
 
 Function F(n : Integer) : Integer;
   Begin
