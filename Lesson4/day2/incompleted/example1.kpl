@@ -1,3 +1,18 @@
 Program Example1; (* Example 1 *)
+CONST MAX = 10.123;
+	 MIN = 'a';
+TYPE T= ARRAY(. 9 .) of Integer;
+VAR A : ARRAY(. 9 .) of Integer;
+PROCEDURE THUTUC (F:FLOAT ; U:FLOAT );
+
+begin
+ 	F:=1.26;
+end;
 Begin
-End. (* Example 1 *)
+	A >> 2.45;
+	CALL THUTUC (2.4);
+	FOR  N := 3 TO N DO
+		Begin
+		  CALL  WRITEI(A(. N .));
+		end;
+End. (* Example 1*)

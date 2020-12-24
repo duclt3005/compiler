@@ -23,7 +23,7 @@ enum ObjectKind {
   OBJ_FUNCTION,
   OBJ_PROCEDURE,
   OBJ_PARAMETER,
-  OBJ_PROGRAM
+  OBJ_PROGRAM,
 };
 
 enum ParamKind {

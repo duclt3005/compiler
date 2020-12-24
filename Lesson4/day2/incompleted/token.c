@@ -110,6 +110,10 @@ char *tokenToString(TokenType tokenType) {
   case SB_LSEL: return "\'(.\'";
   case SB_RSEL: return "\'.)\'";
   case SB_MOD: return "\'%\'";
+  case SB_ASSIGN_PLUS: return "\'+=\'";
+  case SB_ASSIGN_MINUS: return "\'-=\'";
+  case SB_SHIFT_LEFT: return "\'<<\'";
+  case SB_SHIFT_RIGHT: return "\'>>'\'";
   default: return "";
   }
 }

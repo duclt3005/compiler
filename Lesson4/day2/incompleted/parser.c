@@ -26,6 +26,7 @@ void eat(TokenType tokenType)
 {
   if (lookAhead->tokenType == tokenType)
   {
+     printToken(lookAhead);
     scan();
   }
   else{
@@ -42,7 +43,6 @@ void compileProgram(void)
   obj = createProgramObject(currentToken->string);
 
   eat(SB_SEMICOLON);
-
   enterBlock(obj->progAttrs->scope);
   compileBlock();
   exitBlock();
@@ -490,7 +490,28 @@ void compileLValue(void)
 void compileAssignSt(void)
 {
   compileLValue();
-  eat(SB_ASSIGN);
+   switch (lookAhead->tokenType)
+  {
+  case SB_ASSIGN_PLUS:
+    eat(SB_ASSIGN_PLUS);
+    break;
+  case SB_ASSIGN_MINUS:
+    eat(SB_ASSIGN_MINUS);
+    break;
+   case SB_SHIFT_LEFT:
+    eat(SB_SHIFT_LEFT);
+    break;
+ case SB_SHIFT_RIGHT:
+    eat(SB_SHIFT_RIGHT);
+    break;
+  case SB_ASSIGN:
+    eat(SB_ASSIGN);
+    break;
+  default :
+    printf("%d-%d:Missing assign\n", lookAhead->lineNo, lookAhead->colNo);
+     exit(0);
+  }
+  //eat(SB_ASSIGN);
   compileExpression();
 }
 
@@ -700,6 +721,11 @@ void compileTerm2(void)
     compileFactor();
     compileTerm2();
     break;
+  case SB_MOD:
+      eat(SB_MOD);
+      compileFactor();
+      compileTerm2();
+      break;
     // check the FOLLOW set
   case SB_PLUS:
   case SB_MINUS:
@@ -731,9 +757,15 @@ void compileFactor(void)
   case TK_NUMBER:
     eat(TK_NUMBER);
     break;
+  case TK_FLOAT:
+    eat(TK_FLOAT);
+    break;
   case TK_CHAR:
     eat(TK_CHAR);
     break;
+  case SB_MOD:
+       error(ERR_INVALIDFACTOR, lookAhead->lineNo, lookAhead->colNo);
+      break;
   case TK_IDENT:
     eat(TK_IDENT);
     switch (lookAhead->tokenType)
@@ -776,7 +808,7 @@ int compile(char *fileName)
   compileProgram();
 
   printObject(symtab->program, 0);
-
+  printObjectList(symtab->globalObjectList, 0);
   cleanSymTab();
 
   free(currentToken);

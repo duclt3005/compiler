@@ -88,26 +88,26 @@ Token *readNumber(void)
 {
   Token *token = makeToken(TK_NUMBER, lineNo, colNo);
   int count = 0;
-  token->string[count] = currentChar;                 // them vao token
-  count++;                                            // ki tu tiep theo trong token
+  token->string[count] = currentChar; // them vao token
+  count++;                            // ki tu tiep theo trong token
   readChar();
   while (charCodes[currentChar] == CHAR_DIGIT)
-    {                                     // ki tu hien tai la digit
-                                          //	if (count > 9) {
-                                          //		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
-                                          //	}
-      token->string[count] = currentChar; // them vao token
-      count++;                            // ki tu tiep theo trong token
-      readChar();
-    }
- if (charCodes[currentChar] == CHAR_PERIOD)
+  {                                     // ki tu hien tai la digit
+                                        //	if (count > 9) {
+                                        //		error(ERR_NUMBERTOOLONG, token->lineNo, token->colNo);	// so >9 chu so ->error
+                                        //	}
+    token->string[count] = currentChar; // them vao token
+    count++;                            // ki tu tiep theo trong token
+    readChar();
+  }
+  if (charCodes[currentChar] == CHAR_PERIOD)
   {
     token->string[count] = currentChar; // them vao token
     count++;
     readChar();
-    		// if(charCodes[currentChar] == CHAR_PERIOD){
-    		// 	error(ERR_INVALIDFLOAT, token->lineNo, token->colNo);
-    		// }
+    // if(charCodes[currentChar] == CHAR_PERIOD){
+    // 	error(ERR_INVALIDFLOAT, token->lineNo, token->colNo);
+    // }
     while (charCodes[currentChar] == CHAR_DIGIT)
     {
       token->string[count] = currentChar; // them vao token
@@ -178,14 +178,38 @@ Token *getToken(void)
     return readIdentKeyword();
   case CHAR_DIGIT:
     return readNumber();
+    // case CHAR_PLUS:
+    //   token = makeToken(SB_PLUS, lineNo, colNo);
+    //   readChar();
+    //   return token;
   case CHAR_PLUS:
-    token = makeToken(SB_PLUS, lineNo, colNo);
+    ln = lineNo;
+    cn = colNo;
     readChar();
-    return token;
+    if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_EQ))
+    {
+      readChar();
+      return makeToken(SB_ASSIGN_PLUS, ln, cn);
+    }
+    else
+      return makeToken(SB_PLUS, lineNo, colNo);
+
+  // case CHAR_MINUS:
+  //   token = makeToken(SB_MINUS, lineNo, colNo);
+  //   readChar();
+  //   return token;
   case CHAR_MINUS:
-    token = makeToken(SB_MINUS, lineNo, colNo);
+    ln = lineNo;
+    cn = colNo;
     readChar();
-    return token;
+    if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_EQ))
+    {
+      readChar();
+      return makeToken(SB_ASSIGN_MINUS, ln, cn);
+    }
+    else
+      return makeToken(SB_MINUS, lineNo, colNo);
+
   case CHAR_TIMES:
     token = makeToken(SB_TIMES, lineNo, colNo);
     readChar();
@@ -291,6 +315,10 @@ Token *getToken(void)
     token = makeToken(SB_RPAR, lineNo, colNo);
     readChar();
     return token;
+  case CHAR_MOD: // %
+    token = makeToken(SB_MOD, lineNo, colNo);
+    readChar();
+    return token;
   default:
     token = makeToken(TK_NONE, lineNo, colNo);
     error(ERR_INVALID_SYMBOL, lineNo, colNo);
@@ -353,7 +381,7 @@ void printToken(Token *token)
   case KW_INTEGER:
     printf("KW_INTEGER\n");
     break;
-   case KW_FLOAT:
+  case KW_FLOAT:
     printf("KW_FLOAT\n");
     break;
   case KW_CHAR:
@@ -459,8 +487,20 @@ void printToken(Token *token)
   case SB_RSEL:
     printf("SB_RSEL\n");
     break;
-   case SB_MOD:
+  case SB_MOD:
     printf("SB_MOD\n");
+    break;
+  case SB_ASSIGN_PLUS:
+    printf("SB_ASSIGN_PLUS\n");
+    break;
+  case SB_ASSIGN_MINUS:
+    printf("SB_ASSIGN_MINUS\n");
+    break;
+  case SB_SHIFT_RIGHT:
+    printf("SB_SHIFT_RIGHT\n");
+    break;
+  case SB_SHIFT_LEFT:
+    printf("SB_SHIFT_LEFT\n");
     break;
   }
 }
