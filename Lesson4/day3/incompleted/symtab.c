@@ -254,7 +254,7 @@ void addObject(ObjectNode **objList, Object* obj) {
 
 Object* findObject(ObjectNode *objList, char *name) {
   while (objList != NULL) {
-    if (strcmp(objList->object->name, name) == 0) 
+    if (strcasecmp(objList->object->name, name) == 0)
       return objList->object;
     else objList = objList->next;
   }
@@ -330,5 +330,4 @@ void declareObject(Object* obj) {
  
   addObject(&(symtab->currentScope->objList), obj);
 }
-
 
