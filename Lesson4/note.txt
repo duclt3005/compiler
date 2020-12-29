@@ -1,0 +1,7 @@
+Day4- Lesson 4
+- type check
+- check usage of array
+- check usage of function and procedure
+- check usage of reference
+- check for index not real number ( in array )  -> ERROR_FOR_INDEX_FLOAT
+- check SB_MOD not for float, char
