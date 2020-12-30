@@ -58,7 +58,6 @@ void printInitObject(Object *obj, int indent)
   switch (obj->kind)
   {
   case OBJ_CONSTANT:
-   
   case OBJ_TYPE:
   case OBJ_VARIABLE:
   case OBJ_PARAMETER:
@@ -141,5 +140,4 @@ void printObjectList(ObjectNode *objList, int indent)
 void printScope(Scope *scope, int indent)
 {
   printObjectList(scope->objList, indent);
-  
 }

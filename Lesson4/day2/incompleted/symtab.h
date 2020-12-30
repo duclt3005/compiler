@@ -138,6 +138,7 @@ struct SymTab_ {
 typedef struct SymTab_ SymTab;
 
 Type* makeIntType(void);
+Type* makeFloatType(void);
 Type* makeCharType(void);
 Type* makeArrayType(int arraySize, Type* elementType);
 Type* duplicateType(Type* type);

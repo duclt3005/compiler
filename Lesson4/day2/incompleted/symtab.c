@@ -1,9 +1,3 @@
-/* 
- * @copyright (c) 2008, Hedspi, Hanoi University of Technology
- * @author Huu-Duc Nguyen
- * @version 1.0
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -323,8 +317,9 @@ void initSymTab(void) {
   addObject(&(symtab->globalObjectList), obj);
 
   obj = createProcedureObject("WRITELN");
+   addObject(&(obj->procAttrs->paramList),NULL);
   addObject(&(symtab->globalObjectList), obj);
-
+  
   intType = makeIntType();
   charType = makeCharType();
   floatType = makeFloatType();
@@ -346,20 +341,20 @@ void exitBlock(void) {
   symtab->currentScope = symtab->currentScope->outer;
 }
 
-Object* lookupObject(char *name) {
-  // TODO
-   Scope* currentScope = symtab->currentScope;
-    Object* object = NULL;
-    while (currentScope != NULL) {
-        object = findObject(currentScope->objList, name);
-        if (object != NULL)
-            return object;
-        // Jump to the outside scope
-        currentScope = currentScope->outer;
-    }
+// Object* lookupObject(char *name) {
+//   // TODO
+//    Scope* currentScope = symtab->currentScope;
+//     Object* object = NULL;
+//     while (currentScope != NULL) {
+//         object = findObject(currentScope->objList, name);
+//         if (object != NULL)
+//             return object;
+//         // Jump to the outside scope
+//         currentScope = currentScope->outer;
+//     }
 
-    return NULL;
-}
+//     return NULL;
+// }
 
 void declareObject(Object* obj) {
   if (obj->kind == OBJ_PARAMETER) {
