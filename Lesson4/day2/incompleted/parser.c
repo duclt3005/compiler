@@ -14,6 +14,7 @@ int check = 0;
 extern Type *intType;
 extern Type *charType;
 extern SymTab *symtab;
+int checkFor=0;
 
 void scan(void)
 {
@@ -200,15 +201,14 @@ void compileProcDecl(void)
   checkFreshIdent(currentToken->string);
 
   obj = createProcedureObject(currentToken->string);
+  declareObject(obj);
   enterBlock(obj->procAttrs->scope);
-
   compileParams();
   eat(SB_SEMICOLON);
   compileBlock();
   eat(SB_SEMICOLON);
   exitBlock();
 
-  declareObject(obj);
 }
 
 ConstantValue *compileUnsignedConstant(void)
@@ -563,7 +563,7 @@ Type* compileLValue(void) {
 
 void compileAssignSt(void)
 {
-   Type *lvalueType = NULL;
+  Type *lvalueType = NULL;
   Type *expType = NULL;
 
   lvalueType = compileLValue();
@@ -640,21 +640,28 @@ void compileForSt(void)
 {
   eat(KW_FOR);
   eat(TK_IDENT);
-  if (checkDeclaredVariable(currentToken->string) == NULL)
+  Object* var =checkDeclaredVariable(currentToken->string);
+  if (var== NULL){
     error(ERR_UNDECLARED_VARIABLE, currentToken->lineNo, currentToken->colNo);
+  }
+   if(var->varAttrs->type->typeClass != TP_INT){
+      error(ERR_FOR_INDEX_FLOAT, currentToken->lineNo, currentToken->colNo);
+   }
   eat(SB_ASSIGN);
+  checkFor=1;
   compileExpression();
   eat(KW_TO);
   compileExpression();
   eat(KW_DO);
+  checkFor=0;
   compileStatement();
 }
 
 
 void compileArgument(Object* param) {
-  if(param == NULL){
-    return;
-  }
+  // if(param == NULL){
+  //   return;
+  // }
   // parse an argument, and check type consistency
   //       If the corresponding parameter is a reference, the argument must be a lvalue
   if (param->paramAttrs->kind == PARAM_REFERENCE) {
@@ -671,6 +678,7 @@ void compileArgument(Object* param) {
 }
 
 void compileArguments(ObjectNode* paramList) {
+
 
   // parse a list of arguments, check the consistency of the arguments and the given parameters
   switch (lookAhead->tokenType) {
@@ -710,13 +718,14 @@ void compileArguments(ObjectNode* paramList) {
   case SB_GT:
   case SB_RSEL:
   case SB_SEMICOLON:
+      //break;
   case KW_END:
   case KW_ELSE:
   case KW_THEN:
     // Param list exists but we don't see left parenthesis
-    if (paramList->object != NULL){
-          error(ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
-    }
+    // if (paramList->object != NULL){
+    //       error(ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+    // }
     break;
   default:
     error(ERR_INVALID_ARGUMENTS, lookAhead->lineNo, lookAhead->colNo);
@@ -755,7 +764,7 @@ void compileCondition(void)
 
 Type* compileExpression(void)
 {
-   Type* type;
+  Type* type;
   switch (lookAhead->tokenType)
   {
   case SB_PLUS:
@@ -763,6 +772,7 @@ Type* compileExpression(void)
     //compileExpression2();
     type = compileExpression2();
     checkIntType(type);
+    
     break;
   case SB_MINUS:
     eat(SB_MINUS);
@@ -854,6 +864,7 @@ void compileTerm2(void)
     compileTerm2();
     break;
   case SB_MOD:
+  
     eat(SB_MOD);
     compileFactor();
     compileTerm2();
@@ -893,6 +904,9 @@ Type* compileFactor(void)
     type = makeIntType();
     break;
   case TK_FLOAT:
+    if(checkFor==1){
+      error(ERR_FOR_INDEX_FLOAT, lookAhead->lineNo, lookAhead->colNo);
+    }
     eat(TK_FLOAT);
     type = makeFloatType();
     break;
@@ -921,14 +935,19 @@ Type* compileFactor(void)
     switch (obj->kind)
     {
     case OBJ_CONSTANT:
-    type = makeIntType();
-     type->typeClass = obj->constAttrs->value->type;
+      type = makeIntType();
+      type->typeClass = obj->constAttrs->value->type;
       break;
     case OBJ_VARIABLE:
-       if (obj->varAttrs->type->typeClass != TP_ARRAY)
-        type = obj->varAttrs->type;
-      else
-        type = compileIndexes(obj->varAttrs->type);
+        if (obj->varAttrs->type->typeClass != TP_ARRAY){
+            if((obj->varAttrs->type->typeClass != TP_INT) && (checkFor==1)){
+              error(ERR_FOR_INDEX_FLOAT, currentToken->lineNo, currentToken->colNo);
+            }
+          type = obj->varAttrs->type;
+        }
+        else{
+            type = compileIndexes(obj->varAttrs->type);
+        }
       break;
     case OBJ_PARAMETER:
       type = obj->paramAttrs->type;

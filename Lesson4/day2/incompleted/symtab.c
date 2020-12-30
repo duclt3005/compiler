@@ -270,8 +270,9 @@ void addObject(ObjectNode **objList, Object* obj) {
 
 Object* findObject(ObjectNode *objList, char *name) {
   while (objList != NULL) {
-    if (strcmp(objList->object->name, name) == 0) 
+    if (strcmp(objList->object->name, name) == 0){
       return objList->object;
+    }
     else objList = objList->next;
   }
   return NULL;
@@ -289,35 +290,45 @@ void initSymTab(void) {
   obj = createFunctionObject("READC");
   obj->funcAttrs->returnType = makeCharType();
   addObject(&(symtab->globalObjectList), obj);
+//  addObject(&(obj->procAttrs->paramList),NULL);
+  //declareObject(obj);
 
   obj = createFunctionObject("READI");
   obj->funcAttrs->returnType = makeIntType();
   addObject(&(symtab->globalObjectList), obj);
+ // addObject(&(obj->procAttrs->paramList),NULL);
+ // declareObject(obj);
 
   obj = createFunctionObject("READF");
   obj->funcAttrs->returnType = makeFloatType();
   addObject(&(symtab->globalObjectList), obj);
+  //addObject(&(obj->procAttrs->paramList),NULL);
+  //declareObject(obj);
 
   obj = createProcedureObject("WRITEI");
+  //declareObject(obj);
   param = createParameterObject("i", PARAM_VALUE, obj);
   param->paramAttrs->type = makeIntType();
   addObject(&(obj->procAttrs->paramList),param);
   addObject(&(symtab->globalObjectList), obj);
 
   obj = createProcedureObject("WRITEF");
+  //declareObject(obj);
   param = createParameterObject("f", PARAM_VALUE, obj);
   param->paramAttrs->type = makeFloatType();
   addObject(&(obj->procAttrs->paramList),param);
   addObject(&(symtab->globalObjectList), obj);
   
   obj = createProcedureObject("WRITEC");
+  //declareObject(obj);
   param = createParameterObject("ch", PARAM_VALUE, obj);
   param->paramAttrs->type = makeCharType();
   addObject(&(obj->procAttrs->paramList),param);
   addObject(&(symtab->globalObjectList), obj);
 
   obj = createProcedureObject("WRITELN");
-   addObject(&(obj->procAttrs->paramList),NULL);
+ // declareObject(obj);
+  //addObject(&(obj->procAttrs->paramList),NULL);
   addObject(&(symtab->globalObjectList), obj);
   
   intType = makeIntType();
@@ -341,21 +352,6 @@ void exitBlock(void) {
   symtab->currentScope = symtab->currentScope->outer;
 }
 
-// Object* lookupObject(char *name) {
-//   // TODO
-//    Scope* currentScope = symtab->currentScope;
-//     Object* object = NULL;
-//     while (currentScope != NULL) {
-//         object = findObject(currentScope->objList, name);
-//         if (object != NULL)
-//             return object;
-//         // Jump to the outside scope
-//         currentScope = currentScope->outer;
-//     }
-
-//     return NULL;
-// }
-
 void declareObject(Object* obj) {
   if (obj->kind == OBJ_PARAMETER) {
     Object* owner = symtab->currentScope->owner;
@@ -370,7 +366,6 @@ void declareObject(Object* obj) {
       break;
     }
   }
- 
   addObject(&(symtab->currentScope->objList), obj);
 }
 

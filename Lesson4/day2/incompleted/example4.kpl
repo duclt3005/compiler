@@ -4,6 +4,7 @@ TYPE T = INTEGER;
 VAR  A : ARRAY(. 10 .) OF T;
      N : INTEGER;
      CH : CHAR;
+     f: Float;
 
 PROCEDURE INPUT;
 VAR I : INTEGER;
@@ -11,7 +12,7 @@ VAR I : INTEGER;
 BEGIN
   N := READI;
   FOR I := 1 TO N DO
-     A(.I.) := READI;
+     A(.i.) := READI;
 END;
 
 PROCEDURE OUTPUT;

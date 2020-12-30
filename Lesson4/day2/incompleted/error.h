@@ -39,6 +39,8 @@ typedef enum {
   ERR_TYPE_INCONSISTENCY,
   ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY,
   ERR_INVALIDFACTOR,
+  ERR_FOR_INDEX_FLOAT,
+  ERR_MOD,
 } ErrorCode;
 
 void error(ErrorCode err, int lineNo, int colNo);

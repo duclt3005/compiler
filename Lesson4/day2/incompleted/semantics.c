@@ -12,7 +12,7 @@
 extern SymTab* symtab;
 extern Token* currentToken;
 
-static int on_search = 0;
+//static int on_search = 0;
 
 Object* lookupObject(char *name) {
   Scope* scope = symtab->currentScope;
@@ -28,144 +28,104 @@ Object* lookupObject(char *name) {
   return NULL;
 }
 void checkFreshIdent(char *name) {
-    Object * obj = findObject(symtab->currentScope->objList, name);
-    if (obj != NULL)
-        error(ERR_DUPLICATE_IDENT, currentToken->lineNo, currentToken->colNo);
+   if (findObject(symtab->currentScope->objList, name) != NULL)
+    error(ERR_DUPLICATE_IDENT, currentToken->lineNo, currentToken->colNo);
 }
 
 Object* checkDeclaredIdent(char* name) {
-    // Start search
-    on_search = 0;
-
-    Object *obj = lookupObject(name);
-
-    // Reset search
-    on_search = 0;
-
-    if (obj == NULL)
-        error(ERR_UNDECLARED_IDENT, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  Object* obj = lookupObject(name);
+  if (obj == NULL) {
+    error(ERR_UNDECLARED_IDENT,currentToken->lineNo, currentToken->colNo);
+  }
+  return obj;
 }
 
 Object* checkDeclaredConstant(char* name) {
-    Object *obj = NULL;
+  Object* obj = lookupObject(name);
+  if (obj == NULL)
+    error(ERR_UNDECLARED_CONSTANT,currentToken->lineNo, currentToken->colNo);
+  if (obj->kind != OBJ_CONSTANT)
+    error(ERR_INVALID_CONSTANT,currentToken->lineNo, currentToken->colNo);
 
-    // Start search
-    on_search = 0;
-
-    do {
-        obj = lookupObject(name);
-        if (obj != NULL && obj->kind == OBJ_CONSTANT)
-            break;
-    } while (obj != NULL);
-
-    // End search
-    on_search = 0;
-
-    if (obj == NULL)
-        error(ERR_UNDECLARED_CONSTANT, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  return obj;
 }
 
 Object* checkDeclaredType(char* name) {
-    Object *obj = NULL;
+  Object* obj = lookupObject(name);
+  if (obj == NULL)
+    error(ERR_UNDECLARED_TYPE,currentToken->lineNo, currentToken->colNo);
+  if (obj->kind != OBJ_TYPE)
+    error(ERR_INVALID_TYPE,currentToken->lineNo, currentToken->colNo);
 
-    // Start search
-    on_search = 0;
-
-    do {
-        obj = lookupObject(name);
-        if (obj != NULL && obj->kind == OBJ_TYPE)
-            break;
-    } while (obj != NULL);
-
-    // End search
-    on_search = 0;
-
-    if (obj == NULL)
-        error(ERR_UNDECLARED_TYPE, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  return obj;
 }
+
 
 Object* checkDeclaredVariable(char* name) {
-    Object *obj = NULL;
+  Object* obj = lookupObject(name);
+  if (obj == NULL)
+    error(ERR_UNDECLARED_VARIABLE,currentToken->lineNo, currentToken->colNo);
+  if (obj->kind != OBJ_VARIABLE)
+    error(ERR_INVALID_VARIABLE,currentToken->lineNo, currentToken->colNo);
 
-    // Start search
-    on_search = 0;
-
-    do {
-        obj = lookupObject(name);
-        if (obj != NULL && obj->kind == OBJ_VARIABLE)
-            break;
-    } while (obj != NULL);
-
-    // End search
-    on_search = 0;
-
-    if (obj == NULL)
-        error(ERR_UNDECLARED_VARIABLE, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  return obj;
 }
-
 Object* checkDeclaredFunction(char* name) {
-    Object *obj = NULL;
+  Object* obj = lookupObject(name);
+  if (obj == NULL)
+    error(ERR_UNDECLARED_FUNCTION,currentToken->lineNo, currentToken->colNo);
+  if (obj->kind != OBJ_FUNCTION)
+    error(ERR_INVALID_FUNCTION,currentToken->lineNo, currentToken->colNo);
 
-    // Start search
-    on_search = 0;
-
-    do {
-        obj = lookupObject(name);
-        if (obj != NULL && obj->kind == OBJ_FUNCTION)
-            break;
-    } while (obj != NULL);
-
-    // End search
-    on_search = 0;
-
-    if (obj == NULL)
-            error(ERR_UNDECLARED_FUNCTION, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  return obj;
 }
 
 Object* checkDeclaredProcedure(char* name) {
-   Object* obj = lookupObject(name);
-  if (obj == NULL)
+  Object* obj = lookupObject(name);
+  if (obj == NULL) 
     error(ERR_UNDECLARED_PROCEDURE,currentToken->lineNo, currentToken->colNo);
   if (obj->kind != OBJ_PROCEDURE)
     error(ERR_INVALID_PROCEDURE,currentToken->lineNo, currentToken->colNo);
+
   return obj;
 }
 
 Object* checkDeclaredLValueIdent(char* name) {
-    Object *obj = NULL;
+  
+  Object* obj = lookupObject(name);
+  Scope* scope;
 
-    // Start search
-    on_search = 0;
+  if (obj == NULL)
+    error(ERR_UNDECLARED_IDENT,currentToken->lineNo, currentToken->colNo);
 
-    do {
-        obj = lookupObject(name);
-        if (obj != NULL && (obj->kind == OBJ_FUNCTION || obj->kind == OBJ_PARAMETER || obj->kind == OBJ_VARIABLE))
-            break;
-    } while (obj != NULL);
+  switch (obj->kind) {
+  case OBJ_VARIABLE:
+   
+  case OBJ_PARAMETER:
+    break;
+  case OBJ_FUNCTION:
+    scope = symtab->currentScope;
+    while ((scope != NULL) && (scope != obj->funcAttrs->scope)) 
+      scope = scope->outer;
 
-    // End search
-    on_search = 0;
+    if (scope == NULL)
+      error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
+    break;
+  default:
+    error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
+  }
 
-    if (obj == NULL)
-            error(ERR_UNDECLARED_IDENT, currentToken->lineNo, currentToken->colNo);
-
-    return obj;
+  return obj;
 }
+
 void checkIntType(Type* type) {
   if (type->typeClass != TP_INT)
     error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
 }
-
+void checkFloatType(Type* type) {
+  if (type->typeClass != TP_FLOAT)
+    error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+}
 void checkCharType(Type* type) {
   if (type->typeClass != TP_CHAR)
     error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);

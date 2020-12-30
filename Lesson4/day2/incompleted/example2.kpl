@@ -3,7 +3,12 @@ Program Example2; (* Factorial *)
 CONst  d = 123.4 ;
 Type t = FLOAT;
 Var n : Integer;
+    m: Float;
+    c : char;
 
+PROCEDURE  HANOI;
+Begin
+end;
 Function F( n : Integer  ) : Integer;
   Begin
     If n = 0 Then F := 1 Else F := N * F (N - 1);
@@ -12,7 +17,7 @@ Function F( n : Integer  ) : Integer;
 Begin
   For n := 1 To 7 Do
     Begin
-      Call WriteLN();
+      Call WriteLN;
       Call WriteI( F(n));
     End;
 End. (* Factorial *)
