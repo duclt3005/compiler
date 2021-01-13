@@ -17,6 +17,7 @@ Object* checkDeclaredVariable(char *name);
 Object* checkDeclaredFunction(char *name);
 Object* checkDeclaredProcedure(char *name);
 Object* checkDeclaredLValueIdent(char *name);
+Object* checkDeclaredLValueIdent1(char *name, int *n);
 
 void checkIntType(Type* type);
 void checkFloatType(Type* type);

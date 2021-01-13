@@ -112,6 +112,8 @@ char *tokenToString(TokenType tokenType) {
   case SB_MOD: return "\'%\'";
   case SB_ASSIGN_PLUS: return "\'+=\'";
   case SB_ASSIGN_MINUS: return "\'-=\'";
+  case SB_ASSIGN_TIME: return "\'*=\'";
+  case SB_ASSIGN_SLASH: return "\'/=\'";
   case SB_SHIFT_LEFT: return "\'<<\'";
   case SB_SHIFT_RIGHT: return "\'>>'\'";
   default: return "";

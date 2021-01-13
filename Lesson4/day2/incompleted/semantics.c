@@ -86,7 +86,7 @@ Object* checkDeclaredProcedure(char* name) {
     error(ERR_UNDECLARED_PROCEDURE,currentToken->lineNo, currentToken->colNo);
   if (obj->kind != OBJ_PROCEDURE)
     error(ERR_INVALID_PROCEDURE,currentToken->lineNo, currentToken->colNo);
-
+  
   return obj;
 }
 
@@ -99,25 +99,49 @@ Object* checkDeclaredLValueIdent(char* name) {
     error(ERR_UNDECLARED_IDENT,currentToken->lineNo, currentToken->colNo);
 
   switch (obj->kind) {
-  case OBJ_VARIABLE:
-   
-  case OBJ_PARAMETER:
-    break;
-  case OBJ_FUNCTION:
-    scope = symtab->currentScope;
-    while ((scope != NULL) && (scope != obj->funcAttrs->scope)) 
-      scope = scope->outer;
+    case OBJ_VARIABLE:
+    case OBJ_PARAMETER:
+      break;
+    case OBJ_FUNCTION:
+      scope = symtab->currentScope;
+      while ((scope != NULL) && (scope != obj->funcAttrs->scope)) 
+        scope = scope->outer;
 
-    if (scope == NULL)
+      if (scope == NULL)
+        error(ERR_INVALID_LVALUE,currentToken->lineNo, currentToken->colNo);
+      break;
+    default:
       error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
-    break;
-  default:
-    error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
   }
 
   return obj;
 }
+Object* checkDeclaredLValueIdent1(char* name, int* n) {
+  
+  Object* obj = lookupObject(name);
+  Scope* scope;
+  if (obj == NULL)
+    error(ERR_UNDECLARED_IDENT,currentToken->lineNo, currentToken->colNo);
 
+  switch (obj->kind) {
+    case OBJ_VARIABLE:
+    case OBJ_PARAMETER:
+      break;
+    case OBJ_FUNCTION:
+      scope = symtab->currentScope;
+      (*n)++;
+      while ((scope != NULL) && (scope != obj->funcAttrs->scope)) 
+        scope = scope->outer;
+
+      if (scope == NULL)
+        error(ERR_INVALID_LVALUE,currentToken->lineNo, currentToken->colNo);
+      break;
+    default:
+      error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
+  }
+
+  return obj;
+}
 void checkIntType(Type* type) {
   if (type->typeClass != TP_INT)
     error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);

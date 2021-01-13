@@ -5,8 +5,9 @@ Type t = FLOAT;
 Var n : Integer;
     m: Float;
     c : char;
-
-PROCEDURE  HANOI;
+    a:Integer;
+     b:Integer;
+PROCEDURE  HANOI(a:Integer ; b:Integer);
 Begin
 end;
 Function F( n : Integer  ) : Integer;
@@ -17,7 +18,12 @@ Function F( n : Integer  ) : Integer;
 Begin
   For n := 1 To 7 Do
     Begin
+      a += F(n);
+      a -= F(n);
+      a *= F(n);
+      a /= F(n);
       Call WriteLN;
-      Call WriteI( F(n));
+      CAll HANOI(a,b);
+      Call WriteI(a);
     End;
 End. (* Factorial *)

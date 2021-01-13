@@ -82,6 +82,7 @@ struct ErrorMessage errors[32] = {
     {ERR_INVALIDFACTOR, "Invalid factor!"},
     {ERR_FOR_INDEX_FLOAT, "Invalid index in for loop!"},
     {ERR_MOD, "Modulo is for integer number!"},
+    
     };
 
 void error(ErrorCode err, int lineNo, int colNo)

@@ -3,15 +3,18 @@ CONST MAX = 10.123;
 	 MIN = 'a';
 TYPE T= ARRAY(. 9 .) of Integer;
 VAR A : ARRAY(. 9 .) of Integer;
+	b: Integer;
+	N: Integer;
+	m:float;
 PROCEDURE THUTUC (F:FLOAT ; U:FLOAT );
 
 begin
  	F:=1.26;
 end;
 Begin
-	A >> 2.45;
-	CALL THUTUC (2.4);
-	FOR  N := 3 TO N DO
+	b := m%2;
+	CALL THUTUC (2.4, 3.6);
+	FOR  N := 3 TO 4 DO
 		Begin
 		  CALL  WRITEI(A(. N .));
 		end;

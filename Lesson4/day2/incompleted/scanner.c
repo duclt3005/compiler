@@ -211,13 +211,34 @@ Token *getToken(void)
       return makeToken(SB_MINUS, lineNo, colNo);
 
   case CHAR_TIMES:
-    token = makeToken(SB_TIMES, lineNo, colNo);
+   ln = lineNo;
+    cn = colNo;
     readChar();
-    return token;
+    if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_EQ))
+    {
+      readChar();
+      return makeToken(SB_ASSIGN_TIME, ln, cn);
+    }
+    else
+      return makeToken(SB_TIMES, lineNo, colNo);
+
+    // token = makeToken(SB_TIMES, lineNo, colNo);
+    // readChar();
+    // return token;
   case CHAR_SLASH:
-    token = makeToken(SB_SLASH, lineNo, colNo);
+    ln = lineNo;
+    cn = colNo;
     readChar();
-    return token;
+    if ((currentChar != EOF) && (charCodes[currentChar] == CHAR_EQ))
+    {
+      readChar();
+      return makeToken(SB_ASSIGN_SLASH ,ln, cn);
+    }
+    else
+      return makeToken(SB_SLASH, lineNo, colNo);
+    // token = makeToken(SB_SLASH, lineNo, colNo);
+    // readChar();
+    // return token;
   case CHAR_LT:
     ln = lineNo;
     cn = colNo;
@@ -506,6 +527,12 @@ void printToken(Token *token)
   case SB_ASSIGN_MINUS:
     printf("SB_ASSIGN_MINUS\n");
     break;
+  case SB_ASSIGN_TIME:
+    printf("SB_ASSIGN_TIME\n");
+    break;
+  case SB_ASSIGN_SLASH:
+    printf("SB_ASSIGN_SLASH\n");
+    break; 
   case SB_SHIFT_RIGHT:
     printf("SB_SHIFT_RIGHT\n");
     break;

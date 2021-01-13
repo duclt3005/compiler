@@ -15,6 +15,8 @@ extern Type *intType;
 extern Type *charType;
 extern SymTab *symtab;
 int checkFor=0;
+int checkFunction = 0;
+int checkProcedure=0;
 
 void scan(void)
 {
@@ -165,6 +167,7 @@ void compileFuncDecl(void)
   Type* returnType;
 
   eat(KW_FUNCTION);
+  checkFunction=1;
   eat(TK_IDENT);
   // Check if a function identifier is fresh in the block
   checkFreshIdent(currentToken->string);
@@ -184,6 +187,9 @@ void compileFuncDecl(void)
 
   eat(SB_SEMICOLON);
   compileBlock();
+  if(checkFunction<2){
+    printf("There is at least one assignment LValue same Function ID\n");
+  }
   eat(SB_SEMICOLON);
   // exit the function block
   exitBlock();
@@ -463,6 +469,11 @@ void compileParams(void)
     }
     eat(SB_RPAR);
   }
+  else{
+    Object *param= createParameterObject(currentToken->string,0, symtab->currentScope->owner);
+    declareObject(param);
+    checkProcedure=1;
+  }
 }
 
 void compileParam(void)
@@ -512,6 +523,7 @@ void compileStatement(void)
   switch (lookAhead->tokenType)
   {
   case TK_IDENT:
+    checkDeclaredLValueIdent1(lookAhead->string, &checkFunction);
     compileAssignSt();
     break;
   case KW_CALL:
@@ -574,6 +586,12 @@ void compileAssignSt(void)
     break;
   case SB_ASSIGN_MINUS:
     eat(SB_ASSIGN_MINUS);
+    break;
+  case SB_ASSIGN_TIME:
+    eat(SB_ASSIGN_TIME);
+    break;
+  case SB_ASSIGN_SLASH:
+    eat(SB_ASSIGN_SLASH);
     break;
   case SB_SHIFT_LEFT:
     eat(SB_SHIFT_LEFT);
@@ -659,9 +677,6 @@ void compileForSt(void)
 
 
 void compileArgument(Object* param) {
-  // if(param == NULL){
-  //   return;
-  // }
   // parse an argument, and check type consistency
   //       If the corresponding parameter is a reference, the argument must be a lvalue
   if (param->paramAttrs->kind == PARAM_REFERENCE) {
@@ -679,11 +694,14 @@ void compileArgument(Object* param) {
 
 void compileArguments(ObjectNode* paramList) {
 
-
   // parse a list of arguments, check the consistency of the arguments and the given parameters
   switch (lookAhead->tokenType) {
   case SB_LPAR:
     eat(SB_LPAR);
+  //   if((checkProcedure!=0) && (paramList->object->kind == OBJ_PROCEDURE)){
+  //     printf("*******************\n");
+  //     error(ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+  // }
     compileArgument(paramList->object);
 
     while (lookAhead->tokenType == SB_COMMA) {
