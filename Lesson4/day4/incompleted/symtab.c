@@ -331,4 +331,3 @@ void declareObject(Object* obj) {
   addObject(&(symtab->currentScope->objList), obj);
 }
 
-
