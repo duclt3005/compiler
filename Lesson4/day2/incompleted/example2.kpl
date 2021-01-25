@@ -7,7 +7,7 @@ Var n : Integer;
     c : char;
     a:Integer;
      b:Integer;
-PROCEDURE  HANOI(a:Integer ; b:Integer);
+PROCEDURE  HANOI;
 Begin
 end;
 Function F( n : Integer  ) : Integer;
@@ -23,7 +23,7 @@ Begin
       a *= F(n);
       a /= F(n);
       Call WriteLN;
-      CAll HANOI(a,b);
+      CAll HANOI;
       Call WriteI(a);
     End;
 End. (* Factorial *)

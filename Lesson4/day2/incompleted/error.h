@@ -41,6 +41,7 @@ typedef enum {
   ERR_INVALIDFACTOR,
   ERR_FOR_INDEX_FLOAT,
   ERR_MOD,
+  ERR_ARRAY_OVERFLOW
 } ErrorCode;
 
 void error(ErrorCode err, int lineNo, int colNo);

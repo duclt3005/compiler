@@ -1,10 +1,9 @@
 PROGRAM  EXAMPLE4;  (* Example 4 *)
 CONST MAX = 10;
-TYPE T = INTEGER;
+TYPE T = FLOAT;
 VAR  A : ARRAY(. 10 .) OF T;
      N : INTEGER;
      CH : CHAR;
-     f: Float;
 
 PROCEDURE INPUT;
 VAR I : INTEGER;
@@ -12,7 +11,7 @@ VAR I : INTEGER;
 BEGIN
   N := READI;
   FOR I := 1 TO N DO
-     A(.i.) := READI;
+     A(.i.) := READF;
 END;
 
 PROCEDURE OUTPUT;
@@ -20,26 +19,27 @@ VAR I : INTEGER;
 BEGIN
   FOR I := 1 TO N DO
      BEGIN
-       CALL WRITEI(A(.I.));
+       CALL WRITEF(A(.I.));
        CALL WRITELN;
      END
 END;
 
 FUNCTION SUM : INTEGER;
 VAR I: INTEGER;
-    S : INTEGER;
+    S : FLOAT;
 BEGIN
-    S := 0;
+    S := 0.0;
     I := 1;
     WHILE I <= N DO
      BEGIN
-       S := S + A(.I.);
+       S := -S + A(. I .) ;
        I := I + 1;
      END
 END;
 
 BEGIN
    CH := 'y';
+   A(. 19.1 .) := 10.2;
    WHILE CH = 'y' DO
      BEGIN
        CALL INPUT;

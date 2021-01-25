@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "error.h"
 
-#define NUM_OF_ERRORS 32
+#define NUM_OF_ERRORS 33
 
 struct ErrorMessage
 {
@@ -16,7 +16,7 @@ struct ErrorMessage
     char *message;
 };
 
-struct ErrorMessage errors[32] = {
+struct ErrorMessage errors[33] = {
     {ERR_END_OF_COMMENT, "End of comment expected."},
     // không đóng ngoặc comment ở cuối
     {ERR_IDENT_TOO_LONG, "Identifier too long."},
@@ -73,7 +73,7 @@ struct ErrorMessage errors[32] = {
     {ERR_DUPLICATE_IDENT, "Duplicate identifier."},
     // Const c1 = 10; c2 = 'a'; c2 = 10;
     {ERR_TYPE_INCONSISTENCY, "Type inconsistency"},
-    // Call WriteF ( F(n) );   |  int := float
+    // Call WriteF ( F(n) );   |  int := float | A(. 19 .)(. 29 .) := 10;
     {ERR_PARAMETERS_ARGUMENTS_INCONSISTENCY, "The number of arguments and the number of parameters are inconsistent."},
     // Function F( n : Integer ; var x : FLOAT ) : Integer;
     //   Begin
@@ -82,7 +82,7 @@ struct ErrorMessage errors[32] = {
     {ERR_INVALIDFACTOR, "Invalid factor!"},
     {ERR_FOR_INDEX_FLOAT, "Invalid index in for loop!"},
     {ERR_MOD, "Modulo is for integer number!"},
-    
+    {ERR_ARRAY_OVERFLOW, "Array is overflow!"}
     };
 
 void error(ErrorCode err, int lineNo, int colNo)

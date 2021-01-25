@@ -17,7 +17,9 @@ extern SymTab *symtab;
 int checkFor=0;
 int checkFunction = 0;
 int checkProcedure=0;
-
+int indexArr = 0;
+int checkMod1= 0;
+int checkMod2=0;
 void scan(void)
 {
   Token *tmp = currentToken;
@@ -469,11 +471,11 @@ void compileParams(void)
     }
     eat(SB_RPAR);
   }
-  else{
-    Object *param= createParameterObject(currentToken->string,0, symtab->currentScope->owner);
-    declareObject(param);
-    checkProcedure=1;
-  }
+  // else{
+  //   Object *param= createParameterObject(currentToken->string,0, symtab->currentScope->owner);
+  //   declareObject(param);
+  //   checkProcedure=1;
+  // }
 }
 
 void compileParam(void)
@@ -579,6 +581,7 @@ void compileAssignSt(void)
   Type *expType = NULL;
 
   lvalueType = compileLValue();
+ // printf("-----%d\n", lvalueType->typeClass);
   switch (lookAhead->tokenType)
   {
   case SB_ASSIGN_PLUS:
@@ -608,6 +611,7 @@ void compileAssignSt(void)
   }
   //eat(SB_ASSIGN);
   expType = compileExpression();
+ // printf(">>>>>>>>>>>>%d\n", lvalueType->typeClass);
   //compileExpression();
    checkTypeEquality(lvalueType, expType);
 }
@@ -693,7 +697,6 @@ void compileArgument(Object* param) {
 }
 
 void compileArguments(ObjectNode* paramList) {
-
   // parse a list of arguments, check the consistency of the arguments and the given parameters
   switch (lookAhead->tokenType) {
   case SB_LPAR:
@@ -789,13 +792,15 @@ Type* compileExpression(void)
     eat(SB_PLUS);
     //compileExpression2();
     type = compileExpression2();
-    checkIntType(type);
+    //checkIntType(type);
+    checkFloatType(type);
     
     break;
   case SB_MINUS:
     eat(SB_MINUS);
      type = compileExpression2();
-    checkIntType(type);
+    //checkIntType(type);
+    checkFloatType(type);
     //compileExpression2();
     break;
   default:
@@ -823,13 +828,15 @@ void compileExpression3(void)
   case SB_PLUS:
     eat(SB_PLUS);
     type = compileTerm();
-    checkIntType(type);
+   //checkIntType(type);
+   checkFloatType(type);
     compileExpression3();
     break;
   case SB_MINUS:
     eat(SB_MINUS);
     type = compileTerm();
-    checkIntType(type);
+    //checkIntType(type);
+    checkFloatType(type);
     compileExpression3();
     break;
     // check the FOLLOW set
@@ -872,19 +879,28 @@ void compileTerm2(void)
   case SB_TIMES:
     eat(SB_TIMES);
     type = compileFactor();
-    checkIntType(type);
+    checkFloatType(type);
     compileTerm2();
     break;
   case SB_SLASH:
     eat(SB_SLASH);
      type = compileFactor();
-    checkIntType(type);
+    checkFloatType(type);
     compileTerm2();
     break;
   case SB_MOD:
-  
+    //printf("====================%s\n", currentToken->string);
+    //checkIntType(type);
     eat(SB_MOD);
-    compileFactor();
+      //printf("+++++++%d++++++\n", checkMod1);
+
+    //compileFactor();
+    type = compileFactor();
+    checkIntType(type);
+    // checkMod2=1;
+    // if( (checkMod1 ==1) && (checkMod2 ==1)){
+    //     error(ERR_TYPE_INCONSISTENCY, currentToken->lineNo, currentToken->colNo);
+    // }
     compileTerm2();
     break;
     // check the FOLLOW set
@@ -913,18 +929,22 @@ void compileTerm2(void)
 
 Type* compileFactor(void)
 {
-   Object* obj = NULL;
+  Object* obj = NULL;
   Type* type = NULL;
   switch (lookAhead->tokenType)
   {
   case TK_NUMBER:
     eat(TK_NUMBER);
     type = makeIntType();
+  // printf("!~~~~%d~~%s~~\n", currentToken->value, currentToken->string);
+    indexArr= currentToken->value;
     break;
   case TK_FLOAT:
     if(checkFor==1){
       error(ERR_FOR_INDEX_FLOAT, lookAhead->lineNo, lookAhead->colNo);
     }
+    // checkMod1 = 1;
+    // printf("===========%d\n", lookAhead->tokenType);
     eat(TK_FLOAT);
     type = makeFloatType();
     break;
@@ -937,6 +957,7 @@ Type* compileFactor(void)
     break;
   case TK_IDENT:
     eat(TK_IDENT);
+    
     // check if the identifier is declared
     obj = checkDeclaredIdent(currentToken->string);
     // switch (lookAhead->tokenType)
@@ -965,6 +986,7 @@ Type* compileFactor(void)
         }
         else{
             type = compileIndexes(obj->varAttrs->type);
+            //printf("--->>>>>>>>>>>>>%d\n", type->typeClass);
         }
       break;
     case OBJ_PARAMETER:
@@ -982,14 +1004,15 @@ Type* compileFactor(void)
   default:
     error(ERR_INVALID_FACTOR, lookAhead->lineNo, lookAhead->colNo);
   }
+   //printf("-----_______++++++\n");
   return type;
 }
 
 Type* compileIndexes(Type* arrayType) {
   // parse a sequence of indexes, check the consistency to the arrayType, and return the element type
   Type *idxType = NULL;
-  Type *elmType = NULL;
-
+    Type *elmType = NULL;
+  int size = arrayType->arraySize;
   while (lookAhead->tokenType == SB_LSEL) {
     eat(SB_LSEL);
 
@@ -998,17 +1021,19 @@ Type* compileIndexes(Type* arrayType) {
     checkArrayType(arrayType);
 
     idxType = compileExpression();
+    if(indexArr<=0 || indexArr>size){
+       error(ERR_ARRAY_OVERFLOW, lookAhead->lineNo, lookAhead->colNo);
+    }
     checkIntType(idxType);
 
     eat(SB_RSEL);
-
     // Down 1 level of dimension
     arrayType = arrayType->elementType;
   }
 
   // arrayType becomes elmType when we traverse to the last dimension
   elmType = arrayType;
-
+  //printf("=======++++++++========\n");
   return elmType;
 }
 
@@ -1023,9 +1048,9 @@ int compile(char *fileName)
   initSymTab();
 
   compileProgram();
-
+printObjectList(symtab->globalObjectList, 0);
   printObject(symtab->program, 0);
-  printObjectList(symtab->globalObjectList, 0);
+  //printObjectList(symtab->globalObjectList, 0);
   cleanSymTab();
 
   free(currentToken);
